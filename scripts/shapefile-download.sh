@@ -10,15 +10,15 @@ do
     wget https://tfr.faa.gov/save_pages/$temp_notam.shp.zip -P /tmp/
     
     if [ -f "/tmp/$temp_notam.shp.zip" ]; then
-        unzip /tmp/$temp_notam.shp.zip -d /home/klemen/shapefiles/$temp_guid
+        unzip /tmp/$temp_notam.shp.zip -d /home/ubuntu/shapefiles/$temp_guid
     else
         # write guid, notam pair to `archive` csv file for later scrapes
-        paste -d, <(echo "$guid") <(echo "$notam") <(echo $runtime) >> /home/klemen/newTFRids-archive.csv
+        paste -d, <(echo "$guid") <(echo "$notam") <(echo $runtime) >> /home/ubuntu/newTFRids-archive.csv
     fi
 done < newTFRids-export.csv
 
 # loop over archive file if present to check if shapefile archive has been posted
-if [ -f "/home/klemen/newTFRids-archive.csv" ]; then
+if [ -f "/home/ubuntu/newTFRids-archive.csv" ]; then
     while IFS="," read guid notam timestamp
     do
         temp_guid="${guid%\"}"
@@ -30,7 +30,7 @@ if [ -f "/home/klemen/newTFRids-archive.csv" ]; then
         wget https://tfr.faa.gov/save_pages/$temp_notam.shp.zip -P /tmp/
     
         if [ -f "/tmp/$temp_notam.shp.zip" ]; then
-            unzip /tmp/$temp_notam.shp.zip -d /home/klemen/shapefiles/$temp_guid
+            unzip /tmp/$temp_notam.shp.zip -d /home/ubuntu/shapefiles/$temp_guid
             sed -i "/$temp_guid/d" newTFRids-archive.csv
         else
             # check timestamp to see if TFR should be removed from archive to avoid downloading shapefiles of a future TFR that shares NOTAM identifier
